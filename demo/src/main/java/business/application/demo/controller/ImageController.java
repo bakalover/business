@@ -60,7 +60,7 @@ public class ImageController {
             imageService.deleteById(id);
             return ResponseEntity.ok().body("OK");
 
-        } catch (Exception e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body("Cannot find specified image!");
         }
     }

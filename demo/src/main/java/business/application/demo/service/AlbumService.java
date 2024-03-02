@@ -30,7 +30,8 @@ public class AlbumService {
         albumRepository.save(albumDao);
     }
 
-    public void deleteAlbumById(Long id) throws Exception {
+    public void deleteAlbumById(Long id) throws NoSuchElementException {
+        albumRepository.findById(id).orElseThrow();
         albumRepository.deleteById(id);
     }
 

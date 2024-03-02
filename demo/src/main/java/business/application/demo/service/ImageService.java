@@ -57,7 +57,8 @@ public class ImageService {
         return imageRepository.findByAlbum(albumDao);
     }
 
-    public void deleteById(Long id) throws Exception {
+    public void deleteById(Long id) throws NoSuchElementException {
+        imageRepository.findById(id).orElseThrow();
         imageRepository.deleteById(id);
     }
 
