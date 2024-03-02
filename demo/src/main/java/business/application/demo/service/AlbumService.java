@@ -8,6 +8,7 @@ import business.application.demo.repo.ImageRepository;
 import business.application.demo.repo.entity.AlbumDao;
 import business.application.demo.repo.entity.ImageDao;
 import business.application.demo.repo.request.AlbumBody;
+import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +31,13 @@ public class AlbumService {
         albumRepository.save(albumDao);
     }
 
-    public void deleteAlbumById(Long id) throws NoSuchElementException {
+    public void deleteAlbumById(@NonNull Long id) throws NoSuchElementException {
         albumRepository.findById(id).orElseThrow();
         albumRepository.deleteById(id);
     }
 
     // ~todo transaction
-    public void moveImages(Long fromId, Long toId, List<Long> ids) throws NoSuchElementException {
+    public void moveImages(@NonNull Long fromId, @NonNull Long toId, List<Long> ids) throws NoSuchElementException {
         // todo secur check
         AlbumDao from = albumRepository.findById(fromId).orElseThrow();
         AlbumDao to = albumRepository.findById(toId).orElseThrow();
@@ -60,7 +61,7 @@ public class AlbumService {
 
     }
 
-    public AlbumDao getAlbum(Long id) throws NoSuchElementException {
+    public AlbumDao getAlbum(@NonNull Long id) throws NoSuchElementException {
         return albumRepository.findById(id).orElseThrow();
     }
 }

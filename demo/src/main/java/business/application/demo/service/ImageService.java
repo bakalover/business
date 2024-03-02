@@ -12,6 +12,7 @@ import business.application.demo.repo.entity.AlbumDao;
 import business.application.demo.repo.entity.CommentDao;
 import business.application.demo.repo.entity.ImageDao;
 import business.application.demo.repo.request.CommentBody;
+import lombok.NonNull;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,7 +33,7 @@ public class ImageService {
     private UserRepository userRepositoty;
 
     // ~todo transaction
-    public void addNewImage(MultipartFile file, Long albumId, Boolean face) throws IOException, NoSuchElementException {
+    public void addNewImage(MultipartFile file, @NonNull Long albumId, Boolean face) throws IOException, NoSuchElementException {
         var imageDao = new ImageDao();
         var album = albumRepository.findById(albumId).orElseThrow();
         imageDao.setAlbum(album);
@@ -49,7 +50,7 @@ public class ImageService {
         imageRepository.save(imageDao);
     }
 
-    public ImageDao findById(Long id) throws NoSuchElementException {
+    public ImageDao findById(@NonNull Long id) throws NoSuchElementException {
         return imageRepository.findById(id).orElseThrow();
     }
 
@@ -57,7 +58,7 @@ public class ImageService {
         return imageRepository.findByAlbum(albumDao);
     }
 
-    public void deleteById(Long id) throws NoSuchElementException {
+    public void deleteById(@NonNull Long id) throws NoSuchElementException {
         imageRepository.findById(id).orElseThrow();
         imageRepository.deleteById(id);
     }
@@ -70,7 +71,7 @@ public class ImageService {
         commentRepositoty.save(dao);
     }
 
-    public List<CommentDao> getComments(Long picId) {
+    public List<CommentDao> getComments(@NonNull Long picId) {
         return commentRepositoty.findByImage(imageRepository.findById(picId).orElseThrow());
     }
 }
