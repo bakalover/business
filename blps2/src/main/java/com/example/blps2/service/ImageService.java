@@ -1,17 +1,17 @@
-package business.application.demo.service;
+package com.example.blps2.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import business.application.demo.repo.AlbumRepository;
-import business.application.demo.repo.CommentRepositoty;
-import business.application.demo.repo.ImageRepository;
-import business.application.demo.repo.UserRepository;
-import business.application.demo.repo.entity.AlbumDao;
-import business.application.demo.repo.entity.CommentDao;
-import business.application.demo.repo.entity.ImageDao;
-import business.application.demo.repo.request.CommentBody;
+import com.example.blps2.repo.AlbumRepository;
+import com.example.blps2.repo.CommentRepositoty;
+import com.example.blps2.repo.ImageRepository;
+import com.example.blps2.repo.UserRepository;
+import com.example.blps2.repo.entity.AlbumDao;
+import com.example.blps2.repo.entity.CommentDao;
+import com.example.blps2.repo.entity.ImageDao;
+import com.example.blps2.repo.request.CommentBody;
 import jakarta.transaction.Transactional;
 import lombok.NonNull;
 
