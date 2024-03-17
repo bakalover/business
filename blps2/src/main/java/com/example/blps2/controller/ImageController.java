@@ -1,5 +1,6 @@
 package com.example.blps2.controller;
 
+import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,14 +18,13 @@ import com.example.blps2.repo.entity.ImageDao;
 import com.example.blps2.repo.request.CommentBody;
 import com.example.blps2.service.ImageService;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/image")
 public class ImageController {
+    private final String okMsg = "Ok\n";
 
     @Autowired
     private ImageService imageService;
@@ -35,11 +35,9 @@ public class ImageController {
             @RequestParam("face") Boolean face) {
         try {
             imageService.addNewImage(file, albumId, face);
-            return ResponseEntity.ok().body("OK");
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body("Cannot read file!");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body("Cannot find specified album!");
+            return ResponseEntity.ok().body(okMsg);
+        } catch (TransactionException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -47,10 +45,10 @@ public class ImageController {
     public ResponseEntity<String> postMethodName(@RequestBody CommentBody comment) {
         try {
             imageService.addComment(comment);
-            return ResponseEntity.ok().body("OK");
+            return ResponseEntity.ok().body(okMsg);
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Invalid User or picture!");
+            return ResponseEntity.badRequest().body("Invalid User or picture!\n");
         }
     }
 
@@ -58,10 +56,10 @@ public class ImageController {
     public ResponseEntity<String> deleteImage(@PathVariable Long id) {
         try {
             imageService.deleteById(id);
-            return ResponseEntity.ok().body("OK");
+            return ResponseEntity.ok().body(okMsg);
 
         } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body("Cannot find specified image!");
+            return ResponseEntity.badRequest().body("Cannot find specified image!\n");
         }
     }
 
@@ -70,8 +68,7 @@ public class ImageController {
         try {
             return ResponseEntity.ok().body(imageService.findById(id));
         } catch (NoSuchElementException e) {
-            // Dummy
-            return ResponseEntity.badRequest().body(new ImageDao());
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -80,8 +77,7 @@ public class ImageController {
         try {
             return ResponseEntity.ok().body(imageService.getComments(id));
         } catch (NoSuchElementException e) {
-            // Dummy
-            return ResponseEntity.badRequest().body(new ArrayList<>());
+            return ResponseEntity.badRequest().build();
         }
     }
 

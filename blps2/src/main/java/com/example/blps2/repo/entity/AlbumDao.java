@@ -21,6 +21,7 @@ import lombok.NonNull;
 public class AlbumDao {
     @Id
     @GeneratedValue
+    @NonNull
     private Long id;
 
     @NonNull

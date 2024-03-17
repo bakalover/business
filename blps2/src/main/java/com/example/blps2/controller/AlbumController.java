@@ -3,6 +3,7 @@ package com.example.blps2.controller;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,27 +23,31 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/album")
-public class AlbumConstroller {
+public class AlbumController {
+
+    private final String okMsg = "Ok\n";
 
     @Autowired
     private AlbumService albumService;
 
-    @Autowired
-    private ImageService imageService;
 
     @PostMapping("/add")
     public ResponseEntity<String> addAlbum(@RequestBody AlbumBody album) {
-        albumService.addNewAlbum(album);
-        return ResponseEntity.ok().body("OK");
+        try {
+            albumService.addNewAlbum(album);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Album already exist!\n");
+        }
+        return ResponseEntity.ok().body(okMsg);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteAlbum(@PathVariable Long id) {
         try {
             albumService.deleteAlbumById(id);
-            return ResponseEntity.ok().body("OK");
+            return ResponseEntity.ok().body(okMsg);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body("Cannot find specified album!");
+            return ResponseEntity.badRequest().body("Cannot find specified album!\n");
         }
     }
 
@@ -51,25 +56,21 @@ public class AlbumConstroller {
             @RequestBody ArrayList<Long> ids) {
         try {
             albumService.moveImages(from, to, ids);
-            return ResponseEntity.ok().body("OK");
+            return ResponseEntity.ok().body(okMsg);
 
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Cannot elements!");
+        } catch (TransactionException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
 
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AlbumDao> getAlbum(@PathVariable Long id) {
-        AlbumDao album;
         try {
-            album = albumService.getAlbum(id);
-            album.setImages(imageService.findByAlbum(album));
+            var album = albumService.getAlbum(id);
             return ResponseEntity.ok().body(album);
-
         } catch (NoSuchElementException e) {
-            // Dummy
-            return ResponseEntity.badRequest().body(new AlbumDao());
+            return ResponseEntity.badRequest().build();
         }
     }
 

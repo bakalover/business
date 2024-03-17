@@ -1,7 +1,13 @@
 package com.example.blps2.service;
 
+import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.blps2.repo.AlbumRepository;
@@ -12,7 +18,6 @@ import com.example.blps2.repo.entity.AlbumDao;
 import com.example.blps2.repo.entity.CommentDao;
 import com.example.blps2.repo.entity.ImageDao;
 import com.example.blps2.repo.request.CommentBody;
-import jakarta.transaction.Transactional;
 import lombok.NonNull;
 
 import java.io.IOException;
@@ -20,7 +25,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service("image_service")
-@Transactional
 public class ImageService {
     @Autowired
     private ImageRepository imageRepository;
@@ -34,23 +38,49 @@ public class ImageService {
     @Autowired
     private UserRepository userRepositoty;
 
-    // ~todo transaction
+    private final TransactionTemplate transactionTemplate;
+
+    @SuppressWarnings("null")
+    @Autowired
+    public ImageService(PlatformTransactionManager transactionManager) {
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.transactionTemplate.setTimeout(1);
+        this.transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE);
+    }
+
     public void addNewImage(MultipartFile file, @NonNull Long albumId, Boolean face)
-            throws IOException, NoSuchElementException {
-        var imageDao = new ImageDao();
-        var album = albumRepository.findById(albumId).orElseThrow();
-        imageDao.setAlbum(album);
-        imageDao.setName(file.getOriginalFilename());
-        imageDao.setData(file.getBytes());
-        imageDao.setFace(face);
-        var images = imageRepository.findByAlbum(album);
-        images.forEach(image -> {
-            if (image.getFace()) {
-                image.setFace(false);
-                imageRepository.save(image);
+            throws TransactionException {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+            @Override
+            protected void doInTransactionWithoutResult(@SuppressWarnings("null") TransactionStatus status) {
+                try {
+                    var imageDao = new ImageDao();
+                    var album = albumRepository.findById(albumId).orElseThrow();
+
+                    imageDao.setAlbum(album);
+                    imageDao.setName(file.getOriginalFilename());
+                    imageDao.setData(file.getBytes());
+                    imageDao.setFace(face);
+
+                    var images = imageRepository.findByAlbum(album);
+                    images.forEach(image -> {
+                        if (image.getFace()) {
+                            image.setFace(false);
+                            imageRepository.save(image);
+                        }
+                    });
+                    imageRepository.save(imageDao);
+                } catch (IOException e) {
+                    status.setRollbackOnly();
+                    throw new TransactionException("Cannot read image!\n");
+                } catch (NoSuchElementException e){
+                    status.setRollbackOnly();
+                    throw new TransactionException("Album doesn't exist!\n");
+                }
             }
+
         });
-        imageRepository.save(imageDao);
     }
 
     public ImageDao findById(@NonNull Long id) throws NoSuchElementException {
@@ -74,7 +104,7 @@ public class ImageService {
         commentRepositoty.save(dao);
     }
 
-    public List<CommentDao> getComments(@NonNull Long picId) {
+    public List<CommentDao> getComments(@NonNull Long picId) throws NoSuchElementException {
         return commentRepositoty.findByImage(imageRepository.findById(picId).orElseThrow());
     }
 }

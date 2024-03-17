@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/user")
 public class UserController {
 
+    private final String okMsg = "Ok\n";
+
     @Autowired
     private UserService userService;
 
@@ -22,7 +24,7 @@ public class UserController {
     public ResponseEntity<String> register(@RequestBody UserBody user) {
         try {
             userService.registerUser(user);
-            return ResponseEntity.ok().body("OK");
+            return ResponseEntity.ok().body(okMsg);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Cannot register user!");
         }
