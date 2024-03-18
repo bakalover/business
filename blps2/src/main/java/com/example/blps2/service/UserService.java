@@ -7,7 +7,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.blps2.repo.CredRepository;
 import com.example.blps2.repo.UserRepository;
+import com.example.blps2.repo.entity.Creds;
 import com.example.blps2.repo.entity.UserDao;
 import com.example.blps2.repo.request.UserBody;
 
@@ -31,6 +33,11 @@ public class UserService {
         userDao.setHashedPasswd(hashedPasswd);
         userDao.setUsername(user.getUsername());
         userRepository.save(userDao);
+        var creads = new Creds();
+        creads.setHashedPasswd(userDao.getHashedPasswd());
+        creads.setUsername(user.getUsername());
+        CredRepository.add(creads);
+
     }
 
     public void login(UserBody user) {

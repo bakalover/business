@@ -26,12 +26,12 @@ public class UserController {
             userService.registerUser(user);
             return ResponseEntity.ok().body(okMsg);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Cannot register user!");
         }
 
     }
 
-    
     @PostMapping("/login")
     public void login(@RequestBody UserBody user) {
         // Future security
