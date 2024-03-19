@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,22 +17,21 @@ import com.example.blps2.repo.entity.UserDao;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Profile("sec")
 @Getter
 @Setter
-@AllArgsConstructor
+@NoArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
-    private UserDao user;
-
-    public static UserDetailsImpl fromUser(UserDao user) {
-        return new UserDetailsImpl(user);
-    }
+    private String hashedPasswd;
+    private Collection<Role> roles;
+    private String username;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<Role> roles = user.getRoles();
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
@@ -39,12 +41,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getHashedPasswd();
+        return hashedPasswd;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return username;
     }
 
     @Override

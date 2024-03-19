@@ -9,17 +9,24 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.example.blps2.repo.entity.Creds;
 import com.example.blps2.repo.entity.CredsList;
 
+@Profile("sec")
 @Component
 public class CredRepository {
 
     final static File credRepo = new File("./creds.xml");
 
     public static void add(Creds creds) throws IOException, JAXBException {
+
+        if (findUserByUsername(creds.getUsername()) == null) {
+            return;
+        }
+
         JAXBContext context = JAXBContext.newInstance(CredsList.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         CredsList credsList;
@@ -37,15 +44,19 @@ public class CredRepository {
         mar.marshal(credsList, credRepo);
     }
 
-    public static Creds findUserByUsername(String username) throws Exception {
-        JAXBContext context = JAXBContext.newInstance(CredsList.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        CredsList credsList = (CredsList) unmarshaller.unmarshal(credRepo);
+    public static Creds findUserByUsername(String username) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(CredsList.class);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            CredsList credsList = (CredsList) unmarshaller.unmarshal(credRepo);
 
-        for (Creds creds : credsList.getUserList()) {
-            if (creds.getUsername().equals(username)) {
-                return creds;
+            for (Creds creds : credsList.getUserList()) {
+                if (creds.getUsername().equals(username)) {
+                    return creds;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

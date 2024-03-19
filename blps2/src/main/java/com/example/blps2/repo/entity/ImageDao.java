@@ -46,5 +46,5 @@ public class ImageDao {
 
     @OneToMany(mappedBy = "image", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<CommentDao> comments = new ArrayList<>();
-
+    
 }

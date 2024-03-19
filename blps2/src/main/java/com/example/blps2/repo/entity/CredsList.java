@@ -6,6 +6,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.NoArgsConstructor;
 import jakarta.xml.bind.annotation.XmlElement;
 
+// JAXB operating requirement
 @NoArgsConstructor
 @XmlRootElement
 public class CredsList {

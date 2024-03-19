@@ -1,1 +1,1 @@
-insert into roles values(1,'asd');
+insert into roles values(1,'USER');

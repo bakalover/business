@@ -51,7 +51,6 @@
 
 //         UserDao user = new UserDao();
 //         user.setUsername("moderator");
-//         user.setHashedPasswd(passwordEncoder.encode("12345"));
 //         user.setRoles(adminRole);
 //         userRepository.save(user);
 //     }
