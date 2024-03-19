@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.blps2.repo.entity.CommentDao;
+import com.example.blps2.repo.entity.Complaint;
 import com.example.blps2.repo.entity.ImageDao;
 import com.example.blps2.repo.request.CommentBody;
+import com.example.blps2.repo.request.ComplaintBody;
 import com.example.blps2.service.ImageService;
 
 import java.util.List;
@@ -79,6 +81,29 @@ public class ImageController {
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("/complaint")
+    public ResponseEntity<String> makeComplaint(@RequestBody ComplaintBody complaint) {
+        try {
+            imageService.makeComplaint(complaint);
+            return ResponseEntity.ok().body(okMsg);
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Cannot make complaint, wrong info!");
+        }
+
+    }
+
+    @GetMapping("/complaints/{id}")
+    public ResponseEntity<List<Complaint>> register(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok().body(imageService.getComplaint(id));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
 }

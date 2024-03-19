@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.blps2.repo.request.UserBody;
 import com.example.blps2.service.UserService;
 
+import jakarta.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -33,7 +36,17 @@ public class UserController {
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Cannot register user!");
         }
+    }
 
+    @PostMapping("/ban/{username}")
+    public ResponseEntity<String> register(@PathVariable String username) {
+        try {
+            userService.banUser(username);
+            return ResponseEntity.ok().body(okMsg);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Cannot ban user!");
+        }
     }
 
 }

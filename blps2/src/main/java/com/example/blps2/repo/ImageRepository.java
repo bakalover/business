@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import com.example.blps2.repo.entity.AlbumDao;
 import com.example.blps2.repo.entity.ImageDao;
+import com.example.blps2.repo.entity.UserDao;
+
 import java.util.List;
 
 @Repository

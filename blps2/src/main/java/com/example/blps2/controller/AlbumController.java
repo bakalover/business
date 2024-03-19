@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.blps2.repo.entity.AlbumDao;
 import com.example.blps2.repo.request.AlbumBody;
 import com.example.blps2.service.AlbumService;
-import com.example.blps2.service.ImageService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

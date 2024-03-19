@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <credsList>
     <creds>
-        <hashedPasswd>$2a$10$CIIGpPRVEIAvVo1LHxZJ2uKdyDv49wcxjjCBdDUW.SUhRzUyFbKe2</hashedPasswd>
-        <username>user1</username>
+        <hashedPasswd>$2a$10$Zh14Fh02ZT0UEVusu0HRYOObP9HCEDG5D811YJdRdBRmRp.lxNVBG</hashedPasswd>
+        <username>moderator</username>
+    </creds>
+    <creds>
+        <hashedPasswd>$2a$10$N9/94S2EucC6K/C.HrH6k.ka9p7w87EjzHxDQVfOk1/c.WigCBqra</hashedPasswd>
+        <username>admin1</username>
     </creds>
 </credsList>

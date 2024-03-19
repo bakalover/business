@@ -12,12 +12,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.blps2.repo.AlbumRepository;
 import com.example.blps2.repo.CommentRepositoty;
+import com.example.blps2.repo.ComplaintRepository;
 import com.example.blps2.repo.ImageRepository;
 import com.example.blps2.repo.UserRepository;
 import com.example.blps2.repo.entity.AlbumDao;
 import com.example.blps2.repo.entity.CommentDao;
+import com.example.blps2.repo.entity.Complaint;
 import com.example.blps2.repo.entity.ImageDao;
 import com.example.blps2.repo.request.CommentBody;
+import com.example.blps2.repo.request.ComplaintBody;
+
 import lombok.NonNull;
 
 import java.io.IOException;
@@ -37,6 +41,9 @@ public class ImageService {
 
     @Autowired
     private UserRepository userRepositoty;
+
+    @Autowired
+    private ComplaintRepository complaintRepository;
 
     private final TransactionTemplate transactionTemplate;
 
@@ -74,7 +81,7 @@ public class ImageService {
                 } catch (IOException e) {
                     status.setRollbackOnly();
                     throw new TransactionException("Cannot read image!\n");
-                } catch (NoSuchElementException e){
+                } catch (NoSuchElementException e) {
                     status.setRollbackOnly();
                     throw new TransactionException("Album doesn't exist!\n");
                 }
@@ -106,5 +113,17 @@ public class ImageService {
 
     public List<CommentDao> getComments(@NonNull Long picId) throws NoSuchElementException {
         return commentRepositoty.findByImage(imageRepository.findById(picId).orElseThrow());
+    }
+
+    public void makeComplaint(ComplaintBody complaintBody) throws NoSuchElementException {
+        var complaint = new Complaint();
+        complaint.setDescription(complaintBody.getDescription());
+        complaint.setImage(imageRepository.findById(complaintBody.getPicId()).get());
+        complaint.setUser(userRepositoty.findByUsername(complaintBody.getUsername()).get());
+        complaintRepository.save(complaint);
+    }
+
+    public List<Complaint> getComplaint(@NonNull Long picId) throws NoSuchElementException {
+        return complaintRepository.findByImage(imageRepository.findById(picId).get());
     }
 }

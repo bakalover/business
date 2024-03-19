@@ -11,6 +11,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.example.blps2.repo.AlbumRepository;
 import com.example.blps2.repo.ImageRepository;
+import com.example.blps2.repo.UserRepository;
 import com.example.blps2.repo.entity.AlbumDao;
 import com.example.blps2.repo.entity.ImageDao;
 import com.example.blps2.repo.request.AlbumBody;
@@ -39,6 +40,9 @@ public class AlbumService {
     @Autowired
     private ImageRepository imageRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public void addNewAlbum(AlbumBody album) throws IllegalArgumentException {
         if (!albumRepository.findByName(album.getName()).isEmpty()) {
             throw new IllegalArgumentException();
@@ -47,6 +51,7 @@ public class AlbumService {
         albumDao.setDescription(album.getDescription());
         albumDao.setName(album.getName());
         albumDao.setRestrictMode(album.getRestrictMode());
+        albumDao.setUser(userRepository.findByUsername(album.getUsername()).get());
         albumRepository.save(albumDao);
     }
 

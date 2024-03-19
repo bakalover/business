@@ -13,5 +13,8 @@ public class AlbumBody {
     private String description;
 
     @NonNull
+    private String username;
+
+    @NonNull
     private UserRestriction restrictMode;
 }

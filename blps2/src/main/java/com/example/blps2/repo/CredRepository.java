@@ -23,7 +23,7 @@ public class CredRepository {
 
     public static void add(Creds creds) throws IOException, JAXBException {
 
-        if (findUserByUsername(creds.getUsername()) == null) {
+        if (findUserByUsername(creds.getUsername()) != null) {
             return;
         }
 
