@@ -29,8 +29,4 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     private Collection<UserDao> users;
-
-    // @ManyToMany
-    // @JoinTable(name = "roles_privileges", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
-    // private Collection<Privilege> privileges;
 }
